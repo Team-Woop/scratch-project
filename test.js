@@ -1,4 +1,5 @@
 const help = 'help';
+const help2 = 'help2'
 
 // git checkout dev
 // git pull origin dev
