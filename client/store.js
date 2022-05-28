@@ -1,12 +1,13 @@
 // @module store.js
 
-import { createStore } from 'redux';
+import { legacy_createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import reducers from './reducers/index';
+import reducers from './reducers/reducer.js';
 
-const store = createStore(
+const store = legacy_createStore(
     reducers,
     composeWithDevTools()
 );
 
 export default store;
+
