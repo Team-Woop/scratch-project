@@ -17,6 +17,9 @@ app.use('/', express.static(path.resolve(__dirname, '../build')));
 
 app.get('/', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '../client/index.html'));
+// join styles.css page
+app.get('/client/styles.css', (req, res) => {
+  res.status(200).setHeader('content-type', 'text/css').sendFile(path.join(__dirname, '../client/styles.css'));
 });
 
 // receive input from client in format: 
