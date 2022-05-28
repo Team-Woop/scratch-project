@@ -3,9 +3,15 @@ const GasContainer = require('../containers/GasContainer.jsx');
 
 const GasButton = props => {
 
+//   const handleChange = (event) => {
+//     console.log(event.target.value);
+//   }
+
     return (
         <div className="gasButton">
-            <button onClick={() => console.log(props.calculate())}>{props.id}</button>
+            {/* <input onChange={handleChange} type="text"></input><br></br> */}
+            <button onClick={() => props.calculate()}>{props.id}</button>
+            <p>{props.gallonsUsed}</p>
         </div>
     );
 };

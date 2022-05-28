@@ -14,15 +14,21 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => (
   {
-    calculateGas: () => dispatch(actions.calculateGas())
+    calculateGas: () => dispatch(actions.calculateGas()), //props.gallonsUsed
+    // inputField: () => dispatch(actions.inputField())
   }
 );
+
+//   const handleChange = (event) => {
+//     state.gallonsUsed = event.target.value;
+//   }
 
 const GasContainer = props => {
 
     return (
         <div className="gasContainer">
-            <GasButton id='Calculate' key='1' calculate={props.calculateGas}/>
+            {/* <input onChange={handleChange} type="text"></input><br></br> */}
+            <GasButton id='Calculate' key='1' calculate={props.calculateGas} gallonsUsed={props.gallonsUsed}/>
         </div>
         
     )

@@ -14,10 +14,22 @@ const reducer = (state = initialState, action) => {
     case types.CALCULATE_GAS: {
       // math here
       console.log('calculate gas reducer invoked')
+      
       // return updated state
       return {
         ...state,
         gallonsUsed: 20
+      }
+      
+    }
+    case types.INPUT_FIELD: {
+      // math here
+      console.log('MPG input test')
+      
+      // return updated state
+      return {
+        ...state,
+        mpgUser: 40
       }
       
     }

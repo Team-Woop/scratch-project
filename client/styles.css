@@ -18,7 +18,9 @@
     border-radius: 12px;
 }
 
-
+.gasButton input {
+    margin-top: 25px;
+}
 
 .gasButton button {
 
@@ -29,6 +31,6 @@
     justify-content: space-evenly;
     padding: 15px 32px;
     font-size: 16px;
-    margin-top: 25px;
+    margin-top: 10px;
     border-radius: 12px;
 }

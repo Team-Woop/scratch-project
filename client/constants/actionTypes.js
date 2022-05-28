@@ -1,4 +1,5 @@
-export const CALCULATE_GAS = 'CALCULATE_GAS'
+export const CALCULATE_GAS = 'CALCULATE_GAS';
+export const INPUT_FIELD = 'INPUT';
 
 /*
 from: will update state in results for "from" to "input"
