@@ -29,6 +29,14 @@
     justify-content: space-evenly;
     padding: 15px 32px;
     font-size: 16px;
-    margin-top: 25px;
     border-radius: 12px;
+}
+
+.MPGInput {
+    margin-top: 25px;
+    margin-bottom: 5px;
+}
+
+.MPGInput Input {
+    margin-bottom: 5px;
 }
