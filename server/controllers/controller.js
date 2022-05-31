@@ -10,11 +10,12 @@ controller.parseDirections = async (req, res, next) => {
 
 // async call to api to get the total distance and amount of 'steps' for the total trip
 controller.getSteps = async (req, res, next) => {
-
+  //need to switch out placeholder values in get address 
   try{
     const getDirectionsResponse = await axios.get(`https://maps.googleapis.com/maps/api/directions/json?origin=Brooklyn&destination=Universal+Studios+Hollywood&key=${apiKey}`,);
     res.locals.distance = getDirectionsResponse.data.routes[0].legs[0].distance.value; // <-- total in meters is .value, .text is miles
     res.locals.steps = getDirectionsResponse.data.routes[0].legs[0].steps; 
+    // returns array of steps and total distance
     next();
   } catch(err) {
     console.log('err in getSteps', err);
@@ -23,6 +24,7 @@ controller.getSteps = async (req, res, next) => {
 };
 
 const getState = async (lng, lat) => {
+  // takes lat long and returns state code
   try {
     const getStateCode = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&result_type=administrative_area_level_1&key=${apiKey}`);
     // console.log('abc', getStateCode);
@@ -37,6 +39,8 @@ const getState = async (lng, lat) => {
 
 
 controller.getPrice = async(req, res, next) => {
+  // if distance is less than total cap, only take portion of gas used for calc
+  // remember to switch out placeholders for items from front end
   const fuelCap = 1000;
   //const state = res.locals.state
   const mpgInMeters =  12754.32//req.body.mpg * 1609
