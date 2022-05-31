@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import NavContainer from './containers/navContainer.jsx';
 import GasContainer from './containers/GasContainer.jsx';
+import ResultsContainer from './containers/ResultsContainer.jsx';
+
 
 const App = props => {
 
@@ -10,6 +12,8 @@ const App = props => {
     <div id="navContainer">
         <NavContainer />
         <GasContainer />
+        <ResultsContainer />
+
     </div>
     // <div id="gasContainer">
     //   <GasContainer />
