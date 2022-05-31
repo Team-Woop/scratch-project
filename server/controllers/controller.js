@@ -12,7 +12,7 @@ controller.parseDirections = async (req, res, next) => {
 controller.getSteps = async (req, res, next) => {
 
   try{
-    const getDirectionsResponse = await axios.get(`https://maps.googleapis.com/maps/api/directions/json?origin=Disneyland&destination=Universal+Studios+Hollywood&key=${apiKey}`,);
+    const getDirectionsResponse = await axios.get(`https://maps.googleapis.com/maps/api/directions/json?origin=Brooklyn&destination=Universal+Studios+Hollywood&key=${apiKey}`,);
     res.locals.distance = getDirectionsResponse.data.routes[0].legs[0].distance.value; // <-- total in meters is .value, .text is miles
     res.locals.steps = getDirectionsResponse.data.routes[0].legs[0].steps; 
     next();
@@ -25,35 +25,39 @@ controller.getSteps = async (req, res, next) => {
 const getState = async (lng, lat) => {
   try {
     const getStateCode = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&result_type=administrative_area_level_1&key=${apiKey}`);
-    return getStateCode.results[1].short_hand; // <-- 'NY'
+    // console.log('abc', getStateCode);
+    // console.log('def', getStateCode.data.results);
+    return getStateCode.data.results[0].address_components[0].short_name; // <-- 'NY'
   }
   catch(err) {
     console.log('err in getState', err);
-    next(err);
+    //next(err);
   };
 };
 
 
 controller.getPrice = async(req, res, next) => {
   const fuelCap = 1000;
-  const state = res.locals.state
+  //const state = res.locals.state
   const mpgInMeters =  12754.32//req.body.mpg * 1609
-  const initLng = res.locals.step[0].start_location.lng 
-  const initLat = res.locals.steps[0].start_location.lat
+  const initLng = -73.961452 
+  const initLat = 40.714224
   const tankSize = 30;
+  const miles = res.locals.distance / 1609
 
   if (miles < fuelCap) {
-    const state = getState(initLng, initLat)
     try{
+      const state = await getState(initLng, initLat);
       const getNearbyGas = await axios.get(`https://api.collectapi.com/gasPrice/stateUsaPrice?state=${state}`,
       {
         headers: {
           "content-type": "application/json",
-          "authorization": "apikey 7LmvMeW15tjZluLdsMvY0S:08mM1ulDqUYhGmOyUjKk5X",
+          "authorization": "apikey 3ivMk5L2F6vHch8vw1FpgX:6kD8N80uhYUxvPao5LfgXy",
         }
       });
-      gasPrice = Number(getNearbyGas.result.state.gasoline); // <--- gets average price of gas based on state code
-      res.locals.totalPrice = ((res.locals.distance / mpgInMeters)/1609) * gasPrice 
+      gasPrice = Number(getNearbyGas.data.result.state.gasoline); // <--- gets average price of gas based on state code
+      res.locals.totalPrice = ((res.locals.distance / mpgInMeters) / 1609) * gasPrice 
+      
       next();
       }
       catch(err) {
@@ -65,19 +69,27 @@ controller.getPrice = async(req, res, next) => {
   // go through gas price logic and reset runningFuelCap, repeat
   else {
     const fuelCapMeters = fuelCap * 1609.34;
-    const runningCap = fuelCapMeters
+    let runningCap = fuelCapMeters
     let totalPrice = 0;
 
     for (let i = 0; i < res.locals.steps.length; i++) {
       runningCap -= res.locals.steps[i].distance.value;
       if (runningCap <= 0) {
         nearbyState = await getState(res.locals.steps[i].start_location.lng, res.locals.steps[i].start_location.lat);
-        getNearbyGas = await axios.get(`https://api.collectapi.com/gasPrice/stateUsaPrice?state=${nearbyState}`);
-        totalPrice += Number(getNearbyGas.result.state.gasoline) * tankSize;
+        getNearbyGas = await axios.get(`https://api.collectapi.com/gasPrice/stateUsaPrice?state=${nearbyState}`,
+        {
+          headers: {
+            "content-type": "application/json",
+            "authorization": "apikey 3ivMk5L2F6vHch8vw1FpgX:6kD8N80uhYUxvPao5LfgXy"
+          }
+        });
+        totalPrice += Number(getNearbyGas.data.result.state.gasoline) * tankSize;
+        console.log(Number(getNearbyGas.data.result.state.gasoline));
+        runningCap = fuelCapMeters;
       };
     };
     res.locals.totalPrice = totalPrice;
-    console.log(totalPrice);
+    console.log('total price', totalPrice);
     next();
   };
 };

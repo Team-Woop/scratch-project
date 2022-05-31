@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import NavContainer from './containers/navContainer.jsx';
+import NavContainer from './containers/NavContainer.jsx';
 import GasContainer from './containers/GasContainer.jsx';
 import ResultsContainer from './containers/ResultsContainer.jsx';
 
