@@ -3,18 +3,6 @@ const apiKey = 'AIzaSyArkv_B14HtFM54IbcygLMLwVY3PGQYjRI';
 const axios = require('axios');
 const { string, number } = require('prop-types');
 
-
-// const reqFormat = { origin : origin, 
-//   destination : destination,
-//   provideRouteAlternatives: false,
-//   travelMode: 'DRIVING',
-//   drivingOptions: {
-//     departureTime: new Date(/* now, or future date */),
-//     trafficModel: 'pessimistic'
-//   },
-//   unitSystem: google.maps.UnitSystem.IMPERIAL
-// }
-// https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyArkv_B14HtFM54IbcygLMLwVY3PGQYjRI
 controller.parseDirections = async (req, res, next) => {
 
 }
@@ -22,67 +10,78 @@ controller.parseDirections = async (req, res, next) => {
 
 // async call to api to get the total distance and amount of 'steps' for the total trip
 controller.getSteps = async (req, res, next) => {
+
   try{
-    const getDirectionsResponse = await axios.get(`https://maps.googleapis.com/maps/api/directions/json?origin=Disneyland&destination=Universal+Studios+Hollywood&key=${apiKey}`,)
-    // console.log(getDirectionsResponse.data.routes.legs);
-    // getDirectionsResponse.data.routes[0].legs[0].steps
-    // total distance = getDirectionsResponse.data.routes[0].legs[0].distance.value ===> total distance
-      // if totaldistance < their range, skip iterating through the steps and query for gas price nearby
-        // (total tank - amount used) * cost at starting town
+    const getDirectionsResponse = await axios.get(`https://maps.googleapis.com/maps/api/directions/json?origin=Disneyland&destination=Universal+Studios+Hollywood&key=${apiKey}`,);
     res.locals.distance = getDirectionsResponse.data.routes[0].legs[0].distance.value; // <-- total in meters is .value, .text is miles
     res.locals.steps = getDirectionsResponse.data.routes[0].legs[0].steps; 
     next();
   } catch(err) {
-    console.log('err in getlegs', err);
+    console.log('err in getSteps', err);
     next(err);
   };
 };
-//https://collectapi.com/api/gasPrice/gas-prices-api/fromCoordinates
-//apikey 7LmvMeW15tjZluLdsMvY0S:08mM1ulDqUYhGmOyUjKk5X
 
-// var options = {
-//     "hostname": "api.collectapi.com",
-//     "port": null,
-//     "path": "/gasPrice/turkeyGasoline?district=kadikoy&city=istanbul",
-//     "headers": {
-//       "content-type": "application/json",
-//       "authorization": "apikey 7LmvMeW15tjZluLdsMvY0S:08mM1ulDqUYhGmOyUjKk5X"
-//     }
-//   };
-  
-// res :
-// {
-//     success : boolean,
-//     result: [
-//         {
-//             country : string,
-//             gasoline : string,
-//             currency : string,
-//             diesel : string,
-//             lpg : string
-//         }
-//     ]
-// }
+const getState = async (lng, lat) => {
+  try {
+    const getStateCode = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&result_type=administrative_area_level_1&key=${apiKey}`);
+    return getStateCode.results[1].short_hand; // <-- 'NY'
+  }
+  catch(err) {
+    console.log('err in getState', err);
+    next(err);
+  };
+};
+
+
 controller.getPrice = async(req, res, next) => {
-    const fuelCap = 100000;
-    const lng = res.locals.steps[0].start_location.lng
-    const lat = res.locals.steps[0].start_location.lat
-    console.log(lng, lat);
-    // if the user is close to the destination
-    if (res.locals.distance < fuelCap) {
-      try{
-        const getNearbyGas = await axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/?location=${lat}%2C${lng}&radius=1500&type=gas_station&key=${apiKey}`,);
-        res.locals.gas = getNearbyGas;
-        next();
-        } 
+  const fuelCap = 1000;
+  const state = res.locals.state
+  const mpgInMeters =  12754.32//req.body.mpg * 1609
+  const initLng = res.locals.step[0].start_location.lng 
+  const initLat = res.locals.steps[0].start_location.lat
+  const tankSize = 30;
+
+  if (miles < fuelCap) {
+    const state = getState(initLng, initLat)
+    try{
+      const getNearbyGas = await axios.get(`https://api.collectapi.com/gasPrice/stateUsaPrice?state=${state}`,
+      {
+        headers: {
+          "content-type": "application/json",
+          "authorization": "apikey 7LmvMeW15tjZluLdsMvY0S:08mM1ulDqUYhGmOyUjKk5X",
+        }
+      });
+      gasPrice = Number(getNearbyGas.result.state.gasoline); // <--- gets average price of gas based on state code
+      res.locals.totalPrice = ((res.locals.distance / mpgInMeters)/1609) * gasPrice 
+      next();
+      }
       catch(err) {
-        console.log('err in getlegs', err);
-        next(err);
-      }  
-      //(fuelCap - res.locals.distance) * 
-    }
+      console.log('err in getNearbyGas in getPrice controller', err);
+      next(err);
+    };
+  }
+  // iterate through steps, subtract each step distance from runningFuelCap, when we hit 0 
+  // go through gas price logic and reset runningFuelCap, repeat
+  else {
+    const fuelCapMeters = fuelCap * 1609.34;
+    const runningCap = fuelCapMeters
+    let totalPrice = 0;
+
+    for (let i = 0; i < res.locals.steps.length; i++) {
+      runningCap -= res.locals.steps[i].distance.value;
+      if (runningCap <= 0) {
+        nearbyState = await getState(res.locals.steps[i].start_location.lng, res.locals.steps[i].start_location.lat);
+        getNearbyGas = await axios.get(`https://api.collectapi.com/gasPrice/stateUsaPrice?state=${nearbyState}`);
+        totalPrice += Number(getNearbyGas.result.state.gasoline) * tankSize;
+      };
+    };
+    res.locals.totalPrice = totalPrice;
+    console.log(totalPrice);
     next();
-}
+  };
+};
+
 module.exports = controller;
 //  https://maps.googleapis.com/maps/api/directions/
 //  json?origin=Disneyland&destination=Universal+Studios+Hollywood&key=AIzaSyArkv_B14HtFM54IbcygLMLwVY3PGQYjRI

@@ -17,6 +17,7 @@ app.use('/', express.static(path.resolve(__dirname, '../build')));
 
 app.get('/', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '../client/index.html'));
+});
 // join styles.css page
 app.get('/client/styles.css', (req, res) => {
   res.status(200).setHeader('content-type', 'text/css').sendFile(path.join(__dirname, '../client/styles.css'));
@@ -29,7 +30,7 @@ app.get('/client/styles.css', (req, res) => {
 //  https://maps.googleapis.com/maps/api/geocode/
 //  json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyArkv_B14HtFM54IbcygLMLwVY3PGQYjRI
 app.get('/submit', controller.getSteps, controller.getPrice, (req, res) => {
-  res.send(res.locals.gas);
+  res.send(res.locals.totalPrice);
 })
 
 // request to google directions api for legs
