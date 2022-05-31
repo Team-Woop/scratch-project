@@ -52,6 +52,7 @@ const reducer = (state = initialState, action) => {
       console.log('get total capacity reducer invoked')
 
       let num = Number(action.payload)
+
       return {
         ...state,
         totalCapacity: num
