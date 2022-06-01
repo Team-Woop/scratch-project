@@ -20,11 +20,11 @@ controller.getSteps = async (req, res, next) => {
     const getDirectionsResponse = await axios.get(`https://maps.googleapis.com/maps/api/directions/json?origin=${originCity}+%2C%20+${originState}&destination=${destinationCity}+%2C%20+${destinationState}&key=${apiKey}`,);
     res.locals.distance = getDirectionsResponse.data.routes[0].legs[0].distance.text; // <-- total in meters is .value, .text is miles
     // res.locals.steps = getDirectionsResponse.data.routes[0].legs[0].steps; 
-    console.log('distance', res.locals.distance);
+    //console.log('distance', res.locals.distance);
     res.locals.mpg = mpg;
     res.locals.originState = originState;
     // returns array of steps and total distance
-    next();
+    return next();
   } catch(err) {
     console.log('err in getSteps', err);
     next(err);
@@ -73,20 +73,25 @@ controller.getPrice = async(req, res, next) => {
 
     try{
       // const state = await getState(initLng, initLat);
-      const getNearbyGas = await axios.get(`https://api.collectapi.com/gasPrice/stateUsaPrice?state=${originState}`,
-      {
-        headers: {
-          "content-type": "application/json",
-          "authorization": "apikey 3ivMk5L2F6vHch8vw1FpgX:6kD8N80uhYUxvPao5LfgXy",
-        }
-      });
-      gasPrice = Number(getNearbyGas.data.result.state.gasoline); // <--- gets average price of gas based on state code
+
+      //LOCKED OUT OF API :(
+      // const getNearbyGas = await axios.get(`https://api.collectapi.com/gasPrice/stateUsaPrice?state=${originState}`,
+      // {
+      //   headers: {
+      //     "content-type": "application/json",
+      //     "authorization": "apikey 3ivMk5L2F6vHch8vw1FpgX:6kD8N80uhYUxvPao5LfgXy",
+      //   }
+      // });
+      // gasPrice = Number(getNearbyGas.data.result.state.gasoline); // <--- gets average price of gas based on state code
+
+      gasPrice = 5;
+
       console.log('gasPrice', gasPrice);
        // ----> CALCULATE: DISTANCE/MPG * PRICE/GAL
       res.locals.totalPrice = distanceNum/Number(mpg)  * gasPrice; 
       console.log('totalPrice', res.locals.totalPrice);
       
-      next();
+      return next();
       }
       catch(err) {
       console.log('err in getNearbyGas in getPrice controller', err);

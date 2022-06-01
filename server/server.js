@@ -24,6 +24,7 @@ app.use(express.json());
 // app.use('/', express.static(path.resolve(__dirname, '../build')));
 
 app.get('/', (req, res) => {
+  console.log('Calling index.html from the server');
   res.status(200).sendFile(path.join(__dirname, '../client/index.html'));
 });
 
@@ -43,7 +44,10 @@ app.get('/', (req, res) => {
 
 //  https://maps.googleapis.com/maps/api/geocode/
 //  json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyArkv_B14HtFM54IbcygLMLwVY3PGQYjRI
-app.get('/submit', controller.getSteps, controller.getPrice, (req, res) => {
+app.get('/submit', 
+controller.getSteps, 
+controller.getPrice, 
+(req, res) => {
   res.status(200).json(res.locals.totalPrice);
 })
 
