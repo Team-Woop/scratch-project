@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import NavContainer from './containers/NavContainer.jsx';
 import GasContainer from './containers/GasContainer.jsx';
-import ResultsContainer from './containers/ResultsContainer.jsx';
 
 
 const App = props => {
@@ -9,7 +8,6 @@ const App = props => {
     <div id="navContainer">
         <NavContainer />
         <GasContainer />
-        {/* <ResultsContainer /> */}
     </div>
   )
 }

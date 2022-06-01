@@ -6,13 +6,8 @@ import * as actions from '../actions/actions.js';
 
 
 const mapStateToProps = state => ({
-    // mpgUser: state.mpgUser,
-    // totalDistance: state.totalDistance,
     fuelCost: state.fuelCost,
-    // origin: state.origin,
-    // destination: state.destination,
-    // totalCapacity: state.totalCapacity
-    // gallonsUsed: state.gallonsUsed,
+    totalTrips: state.totalTrips
 });
 
 const mapDispatchToProps = dispatch => (  
@@ -28,7 +23,7 @@ const mapDispatchToProps = dispatch => (
     */
     calculateTotal: (obj) => {
       console.log('calculateTotal obj arg: ', obj)
-      dispatch(actions.calculateTotal('loading...')) // this leaves a loading message while the dispath within the fetch request actually pulls the data
+      dispatch(actions.pendingTotal()) // this leaves a loading message while the dispath within the fetch request actually pulls the data
 
       fetch(`/submit/?originCity=${obj.originCity}&originState=${obj.originState}&destinationState=${obj.destinationState}&destinationCity=${obj.destinationCity}&mpg=${obj.mpg}&totalCapacity=${obj.totalCapacity}/`,{
         method: 'get'
@@ -41,21 +36,22 @@ const mapDispatchToProps = dispatch => (
        .catch(err => {
          console.log('error in calculateTotal', err)
        })
-    } 
-    /*
-    // calculateGas: (mpgUser) => dispatch(actions.calculateGas(mpgUser)),
-    // getUserMPG: (mpgUser) => dispatch(actions.getUserMPG(mpgUser)),
-    // getUserOrigin: (origin) => dispatch(actions.getOrigin(origin)),
-    // getUserDestination: (destination) => dispatch(actions.getDestination(destination)),
-    // getTotalCapacity: (totalCapacity) => dispatch(actions.getTotalCapacity(totalCapacity))
-    */
+    }
   }
 );
 
 const GasContainer = props => {
-
-  window.localStorage.setItem('cost', JSON.stringify({total: props.fuelCost}))
-  console.log(window.localStorage)
+  
+  // window.localStorage.clear()
+  if (props.fuelCost !== '$0' && props.fuelCost !== 'loading...' && props.fuelCost){
+    const trips = {};
+    if (window.localStorage.trips) {
+      Object.assign(trips, JSON.parse(window.localStorage.getItem('trips')))
+    }
+    trips[props.totalTrips] = {cost: props.fuelCost};
+    window.localStorage.setItem('trips', JSON.stringify(trips))
+    console.log(JSON.parse(window.localStorage.getItem('trips')))
+  }
 
   return (
     <div className="gasContainer"> 

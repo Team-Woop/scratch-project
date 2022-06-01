@@ -9,7 +9,7 @@ const MPGInput = props => {
   function handlechange(event) {
     const { value, id } = event.target;
     formContents[id] = value;
-    console.log('MPGinput formContents: ', formContents)
+    //console.log('MPGinput formContents: ', formContents)
   }
 
     return (
