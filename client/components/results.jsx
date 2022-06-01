@@ -2,6 +2,10 @@ import React from 'react';
 const ResultsContainer = require('../containers/ResultsContainer.jsx');
 const GasContainer = require('../containers/GasContainer.jsx');
 
+const mapStateToProps = state => ({
+    fuelCost: state.fuelCost
+});
+
 const results = props => {
 
     return (
@@ -11,6 +15,7 @@ const results = props => {
            <p>{props.origin === '' ? props.origin : null}</p>
            <p>{props.destination === '' ? props.destination : null}</p>
            <p>{props.totalCapacity ? props.totalCapacity : null}</p>
+           <p>Total Fuel Cost: {props.fuelCost}</p>
         </div>
     )
 };

@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import GasButton from '../components/gasButton';
 import MPGInput from '../components/mpgInput';
 import * as actions from '../actions/actions.js';
 // import { dispatch } from 'rxjs/internal/observable/pairs';
@@ -29,13 +28,15 @@ const mapDispatchToProps = dispatch => (
     */
     calculateTotal: (obj) => {
       console.log('calculateTotal obj arg: ', obj)
-      fetch(`/submit/?origin=${obj.origin}&destination=${obj.destination}&mpg=${obj.mpg}&totalCapacity=${obj.totalCapacity}/`,{
+      dispatch(actions.calculateTotal('loading...')) // this leaves a loading message while the dispath within the fetch request actually pulls the data
+
+      fetch(`/submit/?originCity=${obj.originCity}&originState=${obj.originState}&destinationState=${obj.destinationState}&destinationCity=${obj.destinationCity}&mpg=${obj.mpg}&totalCapacity=${obj.totalCapacity}/`,{
         method: 'get'
       })
        .then(res => res.json())
        .then(data => {
          console.log('Receiving total cost data: ', data);
-         dispatch(actions.calculateTotal(data));
+         dispatch(actions.calculateTotal('$' + parseInt(data).toString()));
        })
        .catch(err => {
          console.log('error in calculateTotal', err)
@@ -53,15 +54,16 @@ const mapDispatchToProps = dispatch => (
 
 const GasContainer = props => {
 
-    return (
-        <div className="gasContainer"> 
-            <MPGInput id="Mpg" key='2' calculateTotal={props.calculateTotal}/>
-            {/* <GasButton id='Calculate' key='1' userMPG={props.mpgUser} calculate={props.calculateGas} getOrigin={props.getUserOrigin} origin={props.origin} getDestination={props.getUserDestination}
-            destination={props.destination} getTotalCapacity={props.getTotalCapacity} totalCapacity={props.totalCapacity}/> */}
-            <p>Total Cost: {props.fuelCost}</p>
-        </div>
-        
-    )
+  window.localStorage.setItem('cost', JSON.stringify({total: props.fuelCost}))
+  console.log(window.localStorage)
+
+  return (
+    <div className="gasContainer"> 
+      <MPGInput id="Mpg" key='2' calculateTotal={props.calculateTotal}/>
+      <h3>Results:</h3>
+      <p>Total Cost: {props.fuelCost}</p>
+    </div>   
+  )
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(GasContainer);

@@ -4,7 +4,7 @@ const GasContainer = require('../containers/GasContainer.jsx');
 
 const MPGInput = props => {
 
-  const formContents = {}
+  const formContents = {};
 
   function handlechange(event) {
     const { value, id } = event.target;
@@ -15,20 +15,27 @@ const MPGInput = props => {
     return (
         <form className="MPGInput">
             <h3>Enter your car's MPG below:</h3>
-            <input id="mpg" type="text" value = {props.userMPG} onChange={handlechange} ></input>
+            <input id="mpg" className='formInput' type="text" placeholder={'MPG'} value = {props.userMPG} onChange={handlechange} ></input>
 
             <h3>Enter your car's total fuel capacity below:</h3>
-            <input id="totalCapacity" type="text" value = {props.totalCapacity} onChange={handlechange} ></input>
+            <input id="totalCapacity" className='formInput' type="text" placeholder={'Fuel capacity'} value = {props.totalCapacity} onChange={handlechange} ></input>
 
             <h3>Enter your origin below:</h3>
-            <input id="origin" type="text" value = {props.origin} onChange={handlechange}></input>
+            <input id="originCity" className='formInput' type="text" placeholder={'City'} value={props.originCity} onChange={handlechange}></input>
+            <input id="originState" className='formInput' type="text" placeholder={'State'} value={props.originState} onChange={handlechange}></input>
 
             <h3>Enter your destination below: </h3>
-            <input id="destination" type="text" value = {props.destination} onChange={handlechange}></input>
-
+            <input id="destinationCity" className='formInput' type="text" placeholder={'City'} value={props.destinationCity} onChange={handlechange}></input>
+            <input id="destinationState" className='formInput' type="text" placeholder={'State'} value={props.destinationState} onChange={handlechange}></input>
+            <br/>
+            <br/>
             <button onClick={(event) => {
                 event.preventDefault();
-                props.calculateTotal(formContents)
+                props.calculateTotal(formContents);
+                const elements = document.querySelectorAll('.formInput');
+                elements.forEach(el => {
+                  el.value = '';
+                })
               }}>Calculate</button>
         </form>
     );

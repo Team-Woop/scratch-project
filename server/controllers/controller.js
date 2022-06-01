@@ -12,15 +12,17 @@ controller.parseDirections = async (req, res, next) => {
 controller.getSteps = async (req, res, next) => {
   //need to switch out placeholder values in get address 
   //change the input req
-  const { start, end } = req.query;
+  const { originCity, destinationCity, originState, destinationState, mpg } = req.query;
   console.log('params',req.params, 'query',req.query);
-  console.log('start: ', start);
-  console.log('end: ', end);
+  console.log('originCity: ', originCity);
+  console.log('destination: ', destinationCity);
   try{
-    const getDirectionsResponse = await axios.get(`https://maps.googleapis.com/maps/api/directions/json?origin=${start}&destination=${end}&key=${apiKey}`,);
+    const getDirectionsResponse = await axios.get(`https://maps.googleapis.com/maps/api/directions/json?origin=${originCity}+%2C%20+${originState}&destination=${destinationCity}+%2C%20+${destinationState}&key=${apiKey}`,);
     res.locals.distance = getDirectionsResponse.data.routes[0].legs[0].distance.text; // <-- total in meters is .value, .text is miles
-    res.locals.steps = getDirectionsResponse.data.routes[0].legs[0].steps; 
+    // res.locals.steps = getDirectionsResponse.data.routes[0].legs[0].steps; 
     console.log('distance', res.locals.distance);
+    res.locals.mpg = mpg;
+    res.locals.originState = originState;
     // returns array of steps and total distance
     next();
   } catch(err) {
@@ -50,10 +52,10 @@ controller.getPrice = async(req, res, next) => {
       // API REQ: GET PRICE/GAL BASED ON STATE
       // ----> CALCULATE: DISTANCE/MPG * PRICE/GAL
 
-  const { mpg, state } = req.query;
+  const { mpg, originState, distance } = res.locals;
   console.log('mpg', mpg);
-  console.log('state', state);
-  const distance = res.locals.distance;
+  console.log('originState', originState);
+  console.log('distance', distance);
   
   const distanceNum = Number(distance.match(/[0-9]/gm).join(''))
   console.log('distance', distanceNum);
@@ -71,7 +73,7 @@ controller.getPrice = async(req, res, next) => {
 
     try{
       // const state = await getState(initLng, initLat);
-      const getNearbyGas = await axios.get(`https://api.collectapi.com/gasPrice/stateUsaPrice?state=${state}`,
+      const getNearbyGas = await axios.get(`https://api.collectapi.com/gasPrice/stateUsaPrice?state=${originState}`,
       {
         headers: {
           "content-type": "application/json",

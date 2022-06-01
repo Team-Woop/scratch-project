@@ -6,7 +6,7 @@ const initialState = {
   mpgUser: 0,
   totalDistance: 0,
   gallonsUsed: 0,
-  fuelCost: 0,
+  fuelCost: '$0',
   origin: '',
   destination: '',
   totalCapacity: 0,
