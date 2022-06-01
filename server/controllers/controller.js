@@ -11,10 +11,16 @@ controller.parseDirections = async (req, res, next) => {
 // async call to api to get the total distance and amount of 'steps' for the total trip
 controller.getSteps = async (req, res, next) => {
   //need to switch out placeholder values in get address 
+  //change the input req
+  const { start, end } = req.query;
+  console.log('params',req.params, 'query',req.query);
+  console.log('start: ', start);
+  console.log('end: ', end);
   try{
-    const getDirectionsResponse = await axios.get(`https://maps.googleapis.com/maps/api/directions/json?origin=Brooklyn&destination=Universal+Studios+Hollywood&key=${apiKey}`,);
-    res.locals.distance = getDirectionsResponse.data.routes[0].legs[0].distance.value; // <-- total in meters is .value, .text is miles
+    const getDirectionsResponse = await axios.get(`https://maps.googleapis.com/maps/api/directions/json?origin=${start}&destination=${end}&key=${apiKey}`,);
+    res.locals.distance = getDirectionsResponse.data.routes[0].legs[0].distance.text; // <-- total in meters is .value, .text is miles
     res.locals.steps = getDirectionsResponse.data.routes[0].legs[0].steps; 
+    console.log('distance', res.locals.distance);
     // returns array of steps and total distance
     next();
   } catch(err) {
@@ -39,19 +45,32 @@ const getState = async (lng, lat) => {
 
 
 controller.getPrice = async(req, res, next) => {
+  // FROM FRONT-END: MPG, START STATE
+  // FROM RES.LOCALS: DISTANCE
+      // API REQ: GET PRICE/GAL BASED ON STATE
+      // ----> CALCULATE: DISTANCE/MPG * PRICE/GAL
+
+  const { mpg, state } = req.query;
+  console.log('mpg', mpg);
+  console.log('state', state);
+  const distance = res.locals.distance;
+  
+  const distanceNum = Number(distance.match(/[0-9]/gm).join(''))
+  console.log('distance', distanceNum);
+
   // if distance is less than total cap, only take portion of gas used for calc
   // remember to switch out placeholders for items from front end
-  const fuelCap = 1000;
+  // const fuelCap = 1000;
   //const state = res.locals.state
-  const mpgInMeters =  12754.32//req.body.mpg * 1609
-  const initLng = -73.961452 
-  const initLat = 40.714224
-  const tankSize = 30;
-  const miles = res.locals.distance / 1609
+  // const mpgInMeters =  12754.32//req.body.mpg * 1609
+  //const initLng = -73.961452 
+  //const initLat = 40.714224
+  //const tankSize = 30;
+  
+     
 
-  if (miles < fuelCap) {
     try{
-      const state = await getState(initLng, initLat);
+      // const state = await getState(initLng, initLat);
       const getNearbyGas = await axios.get(`https://api.collectapi.com/gasPrice/stateUsaPrice?state=${state}`,
       {
         headers: {
@@ -60,7 +79,10 @@ controller.getPrice = async(req, res, next) => {
         }
       });
       gasPrice = Number(getNearbyGas.data.result.state.gasoline); // <--- gets average price of gas based on state code
-      res.locals.totalPrice = ((res.locals.distance / mpgInMeters) / 1609) * gasPrice 
+      console.log('gasPrice', gasPrice);
+       // ----> CALCULATE: DISTANCE/MPG * PRICE/GAL
+      res.locals.totalPrice = distanceNum/Number(mpg)  * gasPrice; 
+      console.log('totalPrice', res.locals.totalPrice);
       
       next();
       }
@@ -68,35 +90,34 @@ controller.getPrice = async(req, res, next) => {
       console.log('err in getNearbyGas in getPrice controller', err);
       next(err);
     };
-  }
+  };
   // iterate through steps, subtract each step distance from runningFuelCap, when we hit 0 
   // go through gas price logic and reset runningFuelCap, repeat
-  else {
-    const fuelCapMeters = fuelCap * 1609.34;
-    let runningCap = fuelCapMeters
-    let totalPrice = 0;
+  // else {
+  //   const fuelCapMeters = fuelCap * 1609.34;
+  //   let runningCap = fuelCapMeters
+  //   let totalPrice = 0;
 
-    for (let i = 0; i < res.locals.steps.length; i++) {
-      runningCap -= res.locals.steps[i].distance.value;
-      if (runningCap <= 0) {
-        nearbyState = await getState(res.locals.steps[i].start_location.lng, res.locals.steps[i].start_location.lat);
-        getNearbyGas = await axios.get(`https://api.collectapi.com/gasPrice/stateUsaPrice?state=${nearbyState}`,
-        {
-          headers: {
-            "content-type": "application/json",
-            "authorization": "apikey 3ivMk5L2F6vHch8vw1FpgX:6kD8N80uhYUxvPao5LfgXy"
-          }
-        });
-        totalPrice += Number(getNearbyGas.data.result.state.gasoline) * tankSize;
-        console.log(Number(getNearbyGas.data.result.state.gasoline));
-        runningCap = fuelCapMeters;
-      };
-    };
-    res.locals.totalPrice = totalPrice;
-    console.log('total price', totalPrice);
-    next();
-  };
-};
+  //   for (let i = 0; i < res.locals.steps.length; i++) {
+  //     runningCap -= res.locals.steps[i].distance.value;
+  //     if (runningCap <= 0) {
+  //       nearbyState = await getState(res.locals.steps[i].start_location.lng, res.locals.steps[i].start_location.lat);
+  //       getNearbyGas = await axios.get(`https://api.collectapi.com/gasPrice/stateUsaPrice?state=${nearbyState}`,
+  //       {
+  //         headers: {
+  //           "content-type": "application/json",
+  //           "authorization": "apikey 3ivMk5L2F6vHch8vw1FpgX:6kD8N80uhYUxvPao5LfgXy"
+  //         }
+  //       });
+  //       totalPrice += Number(getNearbyGas.data.result.state.gasoline) * tankSize;
+  //       console.log(Number(getNearbyGas.data.result.state.gasoline));
+  //       runningCap = fuelCapMeters;
+  //     };
+  //   };
+  //   res.locals.totalPrice = totalPrice;
+  //   console.log('total price', totalPrice);
+  //   next();
+  // };
 
 module.exports = controller;
 //  https://maps.googleapis.com/maps/api/directions/
