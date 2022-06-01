@@ -14,15 +14,14 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch(action.type) {
-    case types.CALCULATE_GAS: {
+    case types.CALCULATE_TOTAL: {
       // math here
-      let num = Number(action.payload);
       // console.log('calculate gas reducer invoked')
       // console.log(action.payload)
       // return updated state
       return {
         ...state,
-        gallonsUsed: num
+        fuelCost: action.payload
       }
     }
     case types.GET_USER_MPG: {

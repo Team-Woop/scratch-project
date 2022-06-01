@@ -24,3 +24,8 @@ export const getTotalCapacity = userInput => ({
     type: types.GET_TOTAL_CAPACITY,
     payload: userInput
 })
+
+export const calculateTotal = total => ({
+  type: types.CALCULATE_TOTAL,
+  payload: total
+})
