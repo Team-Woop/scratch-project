@@ -3,7 +3,6 @@
 import * as types from '../constants/actionTypes.js';  
 
 const initialState = {
-  totalTrips: 0,
   fuelCost: '$0',
   trips: [],
   currentOrigin: '',
@@ -18,7 +17,6 @@ const reducer = (state = initialState, action) => {
         fuelCost: action.payload.fuelCost,
         currentOrigin: action.payload.currentOrigin,
         currentDestination: action.payload.currentDestination,
-        totalTrips: state.totalTrips + 1
       }
     }
     case types.PENDING_TOTAL: {
@@ -28,12 +26,10 @@ const reducer = (state = initialState, action) => {
       }
     }
     case types.LOAD_TRIPS_TO_STATE: {
-      const trips = Object.assign({}, action.payload);
-      const totalTrips = Object.keys(trips).length;
+      const trips = [...action.payload];
       return {
         ...state,
         trips: trips,
-        totalTrips: totalTrips
       }
     }
     default: {

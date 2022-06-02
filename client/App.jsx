@@ -16,7 +16,12 @@ class App extends Component{
 
   //load trips to store from localstorage on page load
   componentDidMount (){
-    this.props.loadTripsToState(JSON.parse(window.localStorage.getItem('trips')));
+    const trips = JSON.parse(window.localStorage.getItem('trips'))
+    if (trips){
+      this.props.loadTripsToState(trips)
+    } else {
+      this.props.loadTripsToState([])
+    }
   }
   render (){
     return (

@@ -48,15 +48,10 @@ const mapDispatchToProps = dispatch => (
 );
 
 const GasContainer = props => {
-  
-  //set trips to local storage and update to store
 
-
+  //updates local storage and reflects in state
   if (props.fuelCost !== '$0' && props.fuelCost !== 'loading...' && props.fuelCost){
-    const trips = [];
-    if (window.localStorage.trips) {
-      trips = [...JSON.parse(window.localStorage.getItem('trips'))]
-    }
+    const trips = JSON.parse(window.localStorage.getItem('trips'));
     trips.push({
       cost: props.fuelCost,
       origin: props.currentOrigin,
@@ -64,7 +59,11 @@ const GasContainer = props => {
     });
     window.localStorage.setItem('trips', JSON.stringify(trips))
     props.loadTripsToState(trips);
-    //console.log(JSON.parse(window.localStorage.getItem('trips')))
+  }
+
+  let innerText = `Total cost from ${props.currentOrigin} to ${props.currentDestination}: ${props.fuelCost}`;
+  if (props.fuelCost === '$0' || props.fuelCost === 'loading...'){
+    innerText = 'Total cost: ' + props.fuelCost;
   }
 
   return (
@@ -72,7 +71,7 @@ const GasContainer = props => {
       <MPGInput id="Mpg" key='2' calculateTotal={props.calculateTotal}/>
       <TripHistory/>
       <h3>Results:</h3>
-      <p>Total Cost: {props.fuelCost}</p>
+      <p>{innerText}</p>
     </div>   
   )
 }
