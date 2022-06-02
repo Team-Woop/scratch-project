@@ -1,3 +1,36 @@
+* {
+    font-family: Calibri, sans-serif;
+}
+
+body {
+    background-image: url('https://unsplash.com/photos/qzgN45hseN0');
+}
+
+#background-pic {
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: -1;
+}
+
+h3{
+    color: rgb(19, 9, 6);
+    font-family:  Arial, Helvetica, sans-serif;
+}
+
+.listItem {
+    display: flex;
+}
+
+.listTripInfo{
+    margin-right: 10px;
+}
+
 .navBar {
     display: inline-block;
     background-color: rgb(0, 153, 255);
@@ -18,10 +51,38 @@
     border-radius: 12px;
 }
 
+.pageContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center
+}
 
+#woop {
+    margin-bottom: 10px
+}
+
+.gasContainer {
+    display: flex;
+    justify-content: space-around;
+}
+
+.tripHistoryContainer {
+    padding: 20px;
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color: rgba(137, 88, 35, 0.671);
+}
+
+.currentTrip {
+    margin-right: 20px;
+    padding: 20px;
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color: rgba(137, 88, 35, 0.671);
+}
 
 .gasButton button {
-
     text-align: center;
     display: inline-block;
     background-color: rgb(18, 15, 226);
@@ -39,4 +100,52 @@
 
 .MPGInput Input {
     margin-bottom: 5px;
+}
+
+
+.grandTotal {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.submitCalc {
+  background-color: #381611;
+  border-radius: 8px;
+  border-style: none;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  height: 40px;
+  line-height: 20px;
+  list-style: none;
+  margin: 0;
+  outline: none;
+  padding: 10px 16px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  transition: color 100ms;
+  vertical-align: baseline;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.submitCalc:hover,
+.submitCalc:focus {
+  background-color: #61251b;
+}
+
+.fas {
+    color: #381611;;
+}
+
+.fas:hover,
+.fas:focus {
+  color: #61251b;
 }

@@ -3,59 +3,33 @@
 import * as types from '../constants/actionTypes.js';  
 
 const initialState = {
-  mpgUser: 0,
-  totalDistance: 0,
-  gallonsUsed: 0,
-  fuelCost: 0,
-  origin: '',
-  destination: '',
-  totalCapacity: 0,
+  fuelCost: '$0',
+  trips: [],
+  currentOrigin: '',
+  currentDestination: ''
 };
 
 const reducer = (state = initialState, action) => {
   switch(action.type) {
-    case types.CALCULATE_GAS: {
-      // math here
-      let num = Number(action.payload);
-      // console.log('calculate gas reducer invoked')
-      // console.log(action.payload)
-      // return updated state
+    case types.CALCULATE_TOTAL: {
       return {
         ...state,
-        gallonsUsed: num
+        fuelCost: action.payload.fuelCost,
+        currentOrigin: action.payload.currentOrigin,
+        currentDestination: action.payload.currentDestination,
       }
     }
-    case types.GET_USER_MPG: {
-      // console.log('get user MPG reducer invoked')
-      //send this number to the backend
+    case types.PENDING_TOTAL: {
       return {
         ...state,
-        mpgUser: action.payload
+        fuelCost: action.payload
       }
     }
-    case types.GET_USER_ORIGIN: {
-      console.log('get user Origin invoked')
+    case types.LOAD_TRIPS_TO_STATE: {
+      const trips = [...action.payload];
       return {
         ...state,
-        origin: action.payload
-      }
-    }
-    case types.GET_USER_DESTINATION: {
-      console.log('get user Destination invoked')
-      console.log('payload for get user destination: ', action.payload)
-      return {
-        ...state,
-        destination: action.payload
-      }
-    }
-    case types.GET_TOTAL_CAPACITY: {
-      console.log('get total capacity reducer invoked')
-
-      let num = Number(action.payload)
-
-      return {
-        ...state,
-        totalCapacity: num
+        trips: trips,
       }
     }
     default: {
