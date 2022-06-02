@@ -6,8 +6,8 @@ const Trip = props => {
 
   return (
     <div className="trip">
-      <ul>
-        <li>{origin} to {destination}: {cost}</li>
+      <ul className='listItem'>
+        <li className='listTripInfo'>{origin} to {destination}: {cost}</li>
         <i id={id} onClick={handleRemove} className="fas fa-trash-alt"></i>
       </ul>
     </div>

@@ -26,7 +26,7 @@ const MPGInput = props => {
             <input id="destinationState" className='formInput' type="text" placeholder={'State'} value={props.destinationState} onChange={handlechange}></input>
             <br/>
             <br/>
-            <button id="btn" onClick={(event) => {
+            <button id="btn" className='submitCalc' onClick={(event) => {
                 event.preventDefault();
                 props.calculateTotal(formContents);
                 const elements = document.querySelectorAll('.formInput');

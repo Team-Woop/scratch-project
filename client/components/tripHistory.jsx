@@ -33,9 +33,14 @@ const TripHistory = props => {
 
   return (
     <div className='tripHistoryContainer'>
-      <header id='tripHistoryHeader'>Your Trip Search History:</header>
+      <header id='tripHistoryHeader'>
+        <h3>Your Trip Search History:</h3>
+      </header>
       {tripsArr}
-      <div>Grand total: ${grandTotal}</div>
+      <div className='grandTotal'>
+        <h3>Grand total:</h3>
+        <div>${grandTotal}</div>
+      </div>
     </div>
   );
 };

@@ -67,13 +67,19 @@ const GasContainer = props => {
   }
 
   return (
-    <div className="gasContainer"> 
-      <MPGInput id="Mpg" key='2' calculateTotal={props.calculateTotal}/>
-      <TripHistory/>
-      <h3>Results:</h3>
-      <p>{innerText}</p>
-    </div>   
-  )
+    <div className="pageContainer">
+      <img id="woop" src="https://i.imgur.com/3XGmJOU.png" height="150px" width="150px" />
+      <div className="gasContainer">
+        <div className="currentTrip">
+          <MPGInput id="Mpg" key="2" calculateTotal={props.calculateTotal} />
+          <h3 className="gradnTotalResult">Results:</h3>
+          <p>{innerText}</p>
+        </div>
+        <TripHistory />
+        {/* <iframe width="560" height="315" src="https://www.youtube.com/embed/oU1D6aK7HsI?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; &autoplay= 1; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> */}
+      </div>
+    </div>
+  );
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(GasContainer);
