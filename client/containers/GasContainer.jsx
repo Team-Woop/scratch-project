@@ -57,7 +57,7 @@ const GasContainer = props => {
     <div className="gasContainer"> 
       <MPGInput id="Mpg" key='2' calculateTotal={props.calculateTotal}/>
       <h3>Results:</h3>
-      <p>Total Cost: {props.fuelCost}</p>
+      <p id="totalCost">Total Cost: {props.fuelCost}</p>
     </div>   
   )
 }
