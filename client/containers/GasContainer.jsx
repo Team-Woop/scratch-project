@@ -1,12 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import MPGInput from '../components/mpgInput';
+import TripHistory from '../components/tripHistory.jsx'
 import * as actions from '../actions/actions.js';
 
 
 const mapStateToProps = state => ({
     fuelCost: state.fuelCost,
-    totalTrips: state.totalTrips
+    totalTrips: state.totalTrips,
+    currentOrigin: state.currentOrigin,
+    currentDestination: state.currentDestination,
 });
 
 const mapDispatchToProps = dispatch => (  
@@ -17,7 +20,6 @@ const mapDispatchToProps = dispatch => (
     * unnecessary. To asynchronously call the external APIs we needed to use 'Thunk' methodology to delay the calling of the
     * action/reducer workflow. 
     * Further, we also deleted the gasButton component and just created a button in the MPGinput component
-    * 
     **
     */
     loadTripsToState: (trips) => dispatch(actions.loadTripsToState(trips)),
@@ -31,8 +33,12 @@ const mapDispatchToProps = dispatch => (
       })
        .then(res => res.json())
        .then(data => {
-         console.log('Receiving total cost data: ', data);
-         dispatch(actions.calculateTotal('$' + parseInt(data).toString()));
+         const actionData = {
+            fuelCost: '$' + parseInt(data).toString(),
+            currentOrigin: obj.originCity,
+            currentDestination: obj.destinationCity
+         }
+         dispatch(actions.calculateTotal(actionData));
        })
        .catch(err => {
          console.log('error in calculateTotal', err)
@@ -44,21 +50,27 @@ const mapDispatchToProps = dispatch => (
 const GasContainer = props => {
   
   //set trips to local storage and update to store
+
+
   if (props.fuelCost !== '$0' && props.fuelCost !== 'loading...' && props.fuelCost){
-    // window.localStorage.clear()
-    const trips = {};
+    const trips = [];
     if (window.localStorage.trips) {
-      Object.assign(trips, JSON.parse(window.localStorage.getItem('trips')))
+      trips = [...JSON.parse(window.localStorage.getItem('trips'))]
     }
-    trips[props.totalTrips] = {cost: props.fuelCost};
+    trips.push({
+      cost: props.fuelCost,
+      origin: props.currentOrigin,
+      destination: props.currentDestination
+    });
     window.localStorage.setItem('trips', JSON.stringify(trips))
-    props.loadTripsToState(JSON.parse(window.localStorage.getItem('trips')));
-    console.log(JSON.parse(window.localStorage.getItem('trips')))
+    props.loadTripsToState(trips);
+    //console.log(JSON.parse(window.localStorage.getItem('trips')))
   }
 
   return (
     <div className="gasContainer"> 
       <MPGInput id="Mpg" key='2' calculateTotal={props.calculateTotal}/>
+      <TripHistory/>
       <h3>Results:</h3>
       <p>Total Cost: {props.fuelCost}</p>
     </div>   

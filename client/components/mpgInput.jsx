@@ -1,6 +1,4 @@
 import React from 'react';
-const GasContainer = require('../containers/GasContainer.jsx');
-
 
 const MPGInput = props => {
 
@@ -9,7 +7,6 @@ const MPGInput = props => {
   function handlechange(event) {
     const { value, id } = event.target;
     formContents[id] = value;
-    //console.log('MPGinput formContents: ', formContents)
   }
 
     return (

@@ -5,6 +5,9 @@ import * as types from '../constants/actionTypes.js';
 const initialState = {
   totalTrips: 0,
   fuelCost: '$0',
+  trips: [],
+  currentOrigin: '',
+  currentDestination: ''
 };
 
 const reducer = (state = initialState, action) => {
@@ -12,7 +15,9 @@ const reducer = (state = initialState, action) => {
     case types.CALCULATE_TOTAL: {
       return {
         ...state,
-        fuelCost: action.payload,
+        fuelCost: action.payload.fuelCost,
+        currentOrigin: action.payload.currentOrigin,
+        currentDestination: action.payload.currentDestination,
         totalTrips: state.totalTrips + 1
       }
     }
