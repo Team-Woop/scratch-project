@@ -61,9 +61,9 @@ const GasContainer = props => {
     props.loadTripsToState(trips);
   }
 
-  let innerText = `Total cost from ${props.currentOrigin} to ${props.currentDestination}: ${props.fuelCost}`;
+  let innerText = `Trip cost from ${props.currentOrigin} to ${props.currentDestination}: ${props.fuelCost}`;
   if (props.fuelCost === '$0' || props.fuelCost === 'loading...'){
-    innerText = 'Total cost: ' + props.fuelCost;
+    innerText = 'Trip cost: ' + props.fuelCost;
   }
 
   return (

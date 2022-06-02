@@ -11,12 +11,10 @@ const mapDispatchToProps = dispatch => ({
   loadTripsToState: trips => dispatch(actions.loadTripsToState(trips))
 })
 
-
 const TripHistory = props => {
 
   const handleRemove = event => {
     event.preventDefault();
-    console.log(event.target.id)
     const trips = JSON.parse(window.localStorage.getItem('trips'))
     trips.splice(parseInt(event.target.id), 1)
     window.localStorage.setItem('trips', JSON.stringify(trips))
@@ -24,7 +22,7 @@ const TripHistory = props => {
   } 
 
   const { trips } = props;
-  
+
   const tripsArr = [];
   let grandTotal = 0;
   for (let i = 0; i < trips.length; i++) {
@@ -37,7 +35,7 @@ const TripHistory = props => {
     <div className='tripHistoryContainer'>
       <header id='tripHistoryHeader'>Your Trip Search History:</header>
       {tripsArr}
-      <div>All trips will cost: ${grandTotal}</div>
+      <div>Grand total: ${grandTotal}</div>
     </div>
   );
 };

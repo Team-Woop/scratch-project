@@ -8,8 +8,7 @@ const Trip = props => {
     <div className="trip">
       <ul>
         <li>{origin} to {destination}: {cost}</li>
-        <i className="fas fa-trash-alt"></i>
-        <button id={id} onClick={handleRemove}>Remove</button>
+        <i id={id} onClick={handleRemove} className="fas fa-trash-alt"></i>
       </ul>
     </div>
   )
