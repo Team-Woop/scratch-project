@@ -11,6 +11,7 @@ const mapDispatchToProps = dispatch => ({
   loadTripsToState: trips => dispatch(actions.loadTripsToState(trips))
 })
 
+
 const TripHistory = props => {
 
   const handleRemove = event => {

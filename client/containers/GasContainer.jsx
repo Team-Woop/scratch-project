@@ -25,7 +25,6 @@ const mapDispatchToProps = dispatch => (
     loadTripsToState: (trips) => dispatch(actions.loadTripsToState(trips)),
 
     calculateTotal: (obj) => {
-      console.log('calculateTotal obj arg: ', obj)
       dispatch(actions.pendingTotal()) // this leaves a loading message while the dispath within the fetch request actually pulls the data
 
       fetch(`/submit/?originCity=${obj.originCity}&originState=${obj.originState}&destinationState=${obj.destinationState}&destinationCity=${obj.destinationCity}&mpg=${obj.mpg}&totalCapacity=${obj.totalCapacity}/`,{
@@ -33,6 +32,7 @@ const mapDispatchToProps = dispatch => (
       })
        .then(res => res.json())
        .then(data => {
+         if (typeof data !== 'number') throw new Error('caculateTotal get req must respond with number')
          const actionData = {
             fuelCost: '$' + parseInt(data).toString(),
             currentOrigin: obj.originCity,
