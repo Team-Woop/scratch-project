@@ -2,6 +2,10 @@
     font-family: Calibri, sans-serif;
 }
 
+body {
+    background-image: url('https://unsplash.com/photos/qzgN45hseN0');
+}
+
 #background-pic {
     width: 100vw;
     height: 100vh;

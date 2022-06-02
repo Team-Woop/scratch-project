@@ -27,7 +27,7 @@ class App extends Component{
     return (
   
         <div id="navContainer">
-          <img src="client/assets/woop.png" id='background-pic'/>
+          {/* <img src="client/assets/woop.png" id='background-pic'/> */}
           {/* <NavContainer /> */}
           <GasContainer />
         </div>
