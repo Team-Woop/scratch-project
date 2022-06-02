@@ -22,6 +22,15 @@ const reducer = (state = initialState, action) => {
         fuelCost: action.payload
       }
     }
+    case types.LOAD_TRIPS_TO_STATE: {
+      const trips = Object.assign({}, action.payload);
+      const totalTrips = Object.keys(trips).length;
+      return {
+        ...state,
+        trips: trips,
+        totalTrips: totalTrips
+      }
+    }
     default: {
       return state
     } 

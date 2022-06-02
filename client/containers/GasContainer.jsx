@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import MPGInput from '../components/mpgInput';
 import * as actions from '../actions/actions.js';
-// import { dispatch } from 'rxjs/internal/observable/pairs';
 
 
 const mapStateToProps = state => ({
@@ -21,6 +20,8 @@ const mapDispatchToProps = dispatch => (
     * 
     **
     */
+    loadTripsToState: (trips) => dispatch(actions.loadTripsToState(trips)),
+
     calculateTotal: (obj) => {
       console.log('calculateTotal obj arg: ', obj)
       dispatch(actions.pendingTotal()) // this leaves a loading message while the dispath within the fetch request actually pulls the data
@@ -42,14 +43,16 @@ const mapDispatchToProps = dispatch => (
 
 const GasContainer = props => {
   
-  // window.localStorage.clear()
+  //set trips to local storage and update to store
   if (props.fuelCost !== '$0' && props.fuelCost !== 'loading...' && props.fuelCost){
+    // window.localStorage.clear()
     const trips = {};
     if (window.localStorage.trips) {
       Object.assign(trips, JSON.parse(window.localStorage.getItem('trips')))
     }
     trips[props.totalTrips] = {cost: props.fuelCost};
     window.localStorage.setItem('trips', JSON.stringify(trips))
+    props.loadTripsToState(JSON.parse(window.localStorage.getItem('trips')));
     console.log(JSON.parse(window.localStorage.getItem('trips')))
   }
 
