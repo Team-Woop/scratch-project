@@ -9,3 +9,8 @@ export const pendingTotal = () => ({
   type: types.PENDING_TOTAL,
   payload: 'loading...'
 })
+
+export const loadTripsToState = trips => ({
+  type: types.LOAD_TRIPS_TO_STATE,
+  payload: trips
+})
