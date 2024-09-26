@@ -1,37 +1,39 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import * as actions from './actions/actions.js';
 import NavContainer from './containers/NavContainer.jsx';
 import GasContainer from './containers/GasContainer.jsx';
-import ResultsContainer from './containers/ResultsContainer.jsx';
 
 
-const App = props => {
+const mapDispatchToProps = dispatch => ({
+  loadTripsToState: (trips) => dispatch(actions.loadTripsToState(trips))
+})
 
-  // const [count, setCount] = useState(0);
+class App extends Component{
+  constructor (props){
+    super(props)
+  }
 
-  return (
-    <div id="navContainer">
-        <NavContainer />
-        <GasContainer />
-        <ResultsContainer />
-
-    </div>
-    // <div id="gasContainer">
-    //   <GasContainer />
-    // </div>
-  )
+  //load trips to store from localstorage on page load
+  componentDidMount (){
+    const trips = JSON.parse(window.localStorage.getItem('trips'))
+    if (trips){
+      this.props.loadTripsToState(trips)
+    } else {
+      this.props.loadTripsToState([])
+    }
+  }
+  render (){
+    return (
+  
+        <div id="navContainer">
+          {/* <img src="client/assets/woop.png" id='background-pic'/> */}
+          {/* <NavContainer /> */}
+          <GasContainer />
+        </div>
+        
+    )
+  }
 }
 
-
-export default App;
-
-/*
-container 1: id = nav the top most div: logo [about] [How it Works] [sign up] [log in]
-container 2: id = gas
-        body:
-            h1: Gas Cost
-            div:
-            h2: where are you going?
-            input: "From" input: "To"
-            input: "MPG:"
-
-*/
+export default connect(null ,mapDispatchToProps)(App);

@@ -1,9 +1,9 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const webpack = require('webpack');
+// const webpack = require('webpack');
 
 module.exports = {
-  mode: 'development',
+  mode: process.env.NODE_ENV,
   entry: ['./client/index.js'],
   output: {
     filename: 'bundle.js',
@@ -22,8 +22,8 @@ module.exports = {
       },
       {
         test: /\.(css|scss)$/, ///\.s[ac]ss$/i
-        exclude: /node_modules/,
-        use: ['style-loader', 'css-loader']
+        // exclude: /node_modules/,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
         test: /\.(png|jpe?g|gif)$/i,
